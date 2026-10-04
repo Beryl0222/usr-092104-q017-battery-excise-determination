@@ -2,8 +2,43 @@
   "event_id": "sample-017",
   "event_type": "RULE_EFFECTIVE",
   "aggregate_type": "tax_rule",
-  "aggregate_id": "aggregate-017",
-  "occurred_at": "2026-09-20T12:00:00+08:00",
+  "aggregate_id": "rule-lithium-excise-2026-09",
+  "occurred_at": "2026-09-01T00:00:00+08:00",
   "version": 1,
-  "summary": "锂电池税则判定领域样例"
+  "summary": "锂电池消费税九月政策切换样例",
+  "source": "tax-ledger",
+  "payload": {
+    "rule_code": "LI_EXCISE",
+    "rule_version": 202609,
+    "title": "锂离子电池等产品消费税适用规则（九月版）",
+    "legal_basis": "财税公告样例-2026-09",
+    "effective_start": "2026-09-01",
+    "time_zone": "Asia/Shanghai",
+    "replaces_version": 202601,
+    "categories": [
+      {
+        "category": "lithium_ion_cell",
+        "title": "锂离子电芯",
+        "rate": 0.04,
+        "thresholds": []
+      },
+      {
+        "category": "solid_state_cell",
+        "title": "固态电池试制产品",
+        "rate": 0.04,
+        "exemption_windows": [
+          { "start": "2026-09-01", "end": "2027-12-31", "phase": "pilot_exemption" }
+        ]
+      },
+      {
+        "category": "hybrid_storage_module",
+        "title": "混合储能模组",
+        "rate": 0.04,
+        "thresholds": [
+          { "up_to_energy_density_wh_per_kg": 300, "rate": 0.02 },
+          { "rate": 0.04 }
+        ]
+      }
+    ]
+  }
 }

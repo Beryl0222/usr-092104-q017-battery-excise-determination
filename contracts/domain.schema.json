@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "锂电池税则判定领域事件",
+  "title": "锂电池消费税判定与凭证领域事件",
+  "description": "信封字段保持与既有五个事件兼容；payload 内事件字段的权威定义见 src/domain/events.js 的 EVENT_CATALOG。",
   "type": "object",
   "required": [
     "event_id",
@@ -20,9 +21,25 @@
       "type": "string",
       "enum": [
         "RULE_EFFECTIVE",
-        "LOT_CLASSIFIED",
+        "PROFILE_REGISTERED",
+        "PROFILE_RENAMED",
+        "EVIDENCE_ATTACHED",
+        "CLASSIFICATION_PROPOSED",
+        "CLASSIFICATION_SIGNED",
+        "LOT_RECORDED",
+        "LOT_COMPLETED",
+        "LOT_BOM_LINKED",
+        "LOT_USAGE_CHANGED",
+        "SUPPLY_CONTRACTED",
+        "INVOICE_ISSUED",
+        "SUPPLY_DISPATCHED",
         "TAX_CALCULATED",
+        "ENTRY_REVERSED",
+        "ENTRY_ADDED",
+        "TAX_REVIEWED",
         "FILING_SUBMITTED",
+        "FILING_SETTLED",
+        "LOT_CLASSIFIED",
         "ENTRY_ADJUSTED"
       ]
     },
@@ -30,8 +47,12 @@
       "type": "string",
       "enum": [
         "tax_rule",
+        "product_profile",
         "battery_classification",
         "production_lot",
+        "taxable_supply",
+        "invoice",
+        "tax_entry",
         "tax_filing"
       ]
     },
@@ -41,15 +62,32 @@
     },
     "occurred_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "事件实际发生时刻，必须带时区偏移；版本重放按此时刻排序。"
     },
     "version": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 1,
+      "description": "聚合内的乐观并发版本号，从 1 起连续递增。"
     },
     "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "payload": {
+      "type": "object",
+      "description": "事件业务字段，形状由 event_type 决定，见 EVENT_CATALOG。"
+    },
+    "source": {
+      "type": "string",
+      "description": "事件来源系统，例如 tax-ledger、warehouse。"
+    },
+    "causation_id": {
+      "type": "string",
+      "description": "触发本事件的上游事件或命令标识。"
+    },
+    "idempotency_key": {
+      "type": "string"
     }
   },
   "additionalProperties": true
