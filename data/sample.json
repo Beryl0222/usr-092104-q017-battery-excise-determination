@@ -1,9 +1,20 @@
 {
   "event_id": "sample-017",
-  "event_type": "RULE_EFFECTIVE",
+  "event_type": "RULE_VERSION_PUBLISHED",
   "aggregate_type": "tax_rule",
-  "aggregate_id": "aggregate-017",
-  "occurred_at": "2026-09-20T12:00:00+08:00",
+  "aggregate_id": "R-LI-CELL",
+  "occurred_at": "2026-08-15T10:00:00+08:00",
   "version": 1,
-  "summary": "锂电池税则判定领域样例"
+  "summary": "锂离子电芯九月起 4% 版本发布",
+  "payload": {
+    "rule_id": "R-LI-CELL",
+    "rule_version_no": "v2026-2",
+    "citation": "锂电消费税公告 2026 年修订（九月起）",
+    "tax_scope": "li_ion_cell",
+    "rate": 0.04,
+    "is_exempt": false,
+    "effective_from": "2026-09-01T00:00:00+08:00",
+    "effective_to": null,
+    "published_at": "2026-08-15T10:00:00+08:00"
+  }
 }

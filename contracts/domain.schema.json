@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "锂电池税则判定领域事件",
+  "title": "锂电池消费税判定与凭证领域事件",
+  "description": "事件信封对所有服务保持兼容。载荷字段见各事件类型约定；additionalProperties 保留扩展能力，但语义字段须在此登记。时间一律使用带偏移量的 date-time，跨生效日判定以绝对时刻比较，展示层再换算时区。",
   "type": "object",
   "required": [
     "event_id",
@@ -19,19 +20,43 @@
     "event_type": {
       "type": "string",
       "enum": [
+        "RULE_VERSION_PUBLISHED",
         "RULE_EFFECTIVE",
-        "LOT_CLASSIFIED",
+        "RULE_REPEALED",
+        "TECHNICAL_PROFILE_REGISTERED",
+        "EVIDENCE_SUBMITTED",
+        "CLASSIFICATION_PROPOSED",
+        "CLASSIFICATION_SIGNED",
+        "PRODUCTION_LOT_RECORDED",
+        "COMPONENT_CONSUMED",
+        "STOCK_INBOUND",
+        "STOCK_OUTBOUND",
+        "STOCK_RETURNED",
+        "CONTRACT_SIGNED",
+        "TAX_POINT_DETERMINED",
+        "INVOICE_ISSUED",
+        "INVOICE_RED_ISSUED",
         "TAX_CALCULATED",
         "FILING_SUBMITTED",
+        "ENTRY_POSTED",
         "ENTRY_ADJUSTED"
-      ]
+      ],
+      "description": "RULE_*：法规版本时间线；技术档案/证据/分类：分类只能由可核验属性与签署产生；仓库四个事件沿用仓库领域事件；TAX_*/ENTRY_*/FILING_* 为计税与凭证。ENTRY_ADJUSTED 的 adjustment_type 取 reversal（冲正）或 supplement（补提），原 ENTRY_POSTED 与 FILING_SUBMITTED 永不变更。"
     },
     "aggregate_type": {
       "type": "string",
       "enum": [
         "tax_rule",
+        "technical_profile",
+        "evidence_bundle",
         "battery_classification",
         "production_lot",
+        "warehouse_inventory",
+        "sales_contract",
+        "tax_point",
+        "invoice",
+        "tax_assessment",
+        "accounting_entry",
         "tax_filing"
       ]
     },
@@ -41,15 +66,29 @@
     },
     "occurred_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "事件发生的绝对时刻，必须带时区偏移。法规生效边界 [effective_from, effective_to) 按此时刻比较。"
     },
     "version": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 1,
+      "description": "同一聚合流内从 1 连续递增，用于乐观并发与事实重排。"
     },
     "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "payload": {
+      "type": "object",
+      "description": "事件载荷，关键约定：RULE_VERSION_PUBLISHED 携带 rule_id/rule_version_no/citation/rate/rate_basis/tax_scope/effective_from/effective_to/is_exemption/published_at；CLASSIFICATION_SIGNED 携带 signer_id/signer_role/decided_category/evidence_ids，signer_role 必须为授权角色；TAX_CALCULATED 内嵌 explanation（法规引用与区间、分类与证据、计税价格依据、税点依据、计算公式）；FILING_SUBMITTED 不可撤回，更正以后续期间申报批次与 ENTRY_ADJUSTED 表达。"
+    },
+    "causation_id": {
+      "type": "string",
+      "description": "触发本事件的上游事件（如仓库 STOCK_OUTBOUND），用于跨领域因果追溯。"
+    },
+    "correlation_id": {
+      "type": "string",
+      "description": "同一业务链（合同-出库-发票-计税-申报-更正）贯穿标识。"
     }
   },
   "additionalProperties": true
